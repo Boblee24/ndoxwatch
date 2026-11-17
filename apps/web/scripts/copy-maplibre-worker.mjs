@@ -8,4 +8,5 @@ const require = createRequire(import.meta.url);
 const pkgDir = dirname(require.resolve("maplibre-gl/package.json"));
 mkdirSync("public/vendor", { recursive: true });
 copyFileSync(join(pkgDir, "dist", "maplibre-gl-worker.mjs"), "public/vendor/maplibre-gl-worker.mjs");
+// eslint-disable-next-line no-console -- build script output
 console.log("✓ copied maplibre-gl-worker.mjs → public/vendor/");
