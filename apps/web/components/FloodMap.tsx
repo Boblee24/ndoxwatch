@@ -77,6 +77,8 @@ export default function FloodMap({
   const map = useRef<MlMap | null>(null);
   const loaded = useRef(false);
   const fitted = useRef(false);
+  /** Latest "push data into the map" function; called on style load and whenever props change. */
+  const applyRef = useRef<() => void>(() => {});
   const clickRef = useRef(onPointClick);
   clickRef.current = onPointClick;
 
@@ -118,7 +120,7 @@ export default function FloodMap({
         if (typeof id === "string") clickRef.current?.(id);
       });
       loaded.current = true;
-      m.fire("ndox:data");
+      applyRef.current();
     });
     return () => {
       loaded.current = false;
@@ -145,11 +147,8 @@ export default function FloodMap({
         }
       }
     };
+    applyRef.current = apply;
     apply();
-    m.on("ndox:data", apply);
-    return () => {
-      m.off("ndox:data", apply);
-    };
   }, [cells, mask, zones, points, showMask]);
 
   return <div ref={el} className={`${className} overflow-hidden rounded-xl border border-[var(--border)]`} role="region" aria-label="Flood map" />;
