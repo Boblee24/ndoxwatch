@@ -4,15 +4,15 @@ import { Shell } from "./shell";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "sats-starter",
-  description: "Lightning wallet starter for African builders: NWC, Nostr, AI.",
+  title: "NdoxWatch",
+  description: "Report the flood water, get sats.",
   icons: { icon: "/icon.svg" },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#f7931a",
+  themeColor: "#0b6bcb",
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
