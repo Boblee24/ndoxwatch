@@ -8,8 +8,8 @@ import { bigint, boolean, customType, doublePrecision, index, integer, jsonb, pg
 const geometry = customType<{ data: string }>({ dataType: () => "geometry" });
 const bytea = customType<{ data: Buffer }>({ dataType: () => "bytea" });
 
-export const DEPTHS = ["ankle", "knee", "waist", "impassable"] as const;
-export type Depth = (typeof DEPTHS)[number];
+import { DEPTHS, type Depth } from "../depths";
+export { DEPTHS, type Depth };
 export const STATUSES = ["auto_ok", "review", "rejected"] as const;
 export type ReportStatus = (typeof STATUSES)[number];
 

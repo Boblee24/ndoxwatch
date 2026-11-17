@@ -21,7 +21,7 @@ export function Shell({ children, demo }: { children: ReactNode; demo: boolean; 
       <OfflineBanner lang={lang} />
       <header className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-3">
         <Link href="/" className="text-lg font-bold">
-          ⚡ sats-starter
+          💧 NdoxWatch
         </Link>
         <nav className="flex items-center gap-3">
           <Link href="/wallet" className="font-medium underline-offset-4 hover:underline">

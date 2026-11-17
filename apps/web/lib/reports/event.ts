@@ -3,7 +3,7 @@
  * The server re-derives the same values in verify.ts; a test keeps the two in sync.
  */
 import ngeohash from "ngeohash";
-import type { Depth } from "../db/schema";
+import type { Depth } from "../depths";
 
 export const REPORT_KIND = 30078;
 

@@ -1,0 +1,19 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "dakar-rufisque-2026-10",
+        "name": "Pikine – Keur Massar – Rufisque (Oct 2026 flood replay)",
+        "reward_sats": 100,
+        "starts_at": "2026-11-01T00:00:00Z",
+        "ends_at": "2026-12-31T23:59:59Z"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[-17.42, 14.68], [-17.18, 14.68], [-17.18, 14.82], [-17.42, 14.82], [-17.42, 14.68]]]
+      }
+    }
+  ]
+}

@@ -57,3 +57,7 @@ export function parseCenter(v: string | undefined): { lat: number; lon: number }
   const lon = Number(m[2]);
   return Math.abs(lat) <= 90 && Math.abs(lon) <= 180 ? { lat, lon } : null;
 }
+
+export async function deletePlaceholderMasks(db: Db): Promise<void> {
+  await db.execute(sql`DELETE FROM flood_mask WHERE source = 'placeholder'`);
+}

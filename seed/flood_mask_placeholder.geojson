@@ -1,0 +1,8 @@
+{
+  "type": "FeatureCollection",
+  "properties_note": "PLACEHOLDER, not satellite data. Replaced automatically once a real flood_mask_*.geojson from GEE_FLOOD_MASK.md is in seed/.",
+  "features": [
+    { "type": "Feature", "properties": {}, "geometry": { "type": "Polygon", "coordinates": [[[-17.36, 14.745], [-17.32, 14.745], [-17.32, 14.775], [-17.36, 14.775], [-17.36, 14.745]]] } },
+    { "type": "Feature", "properties": {}, "geometry": { "type": "Polygon", "coordinates": [[[-17.29, 14.715], [-17.255, 14.715], [-17.255, 14.74], [-17.29, 14.74], [-17.29, 14.715]]] } }
+  ]
+}

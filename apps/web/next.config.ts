@@ -5,14 +5,14 @@ import { SECURITY_HEADERS } from "@sats/core/csp";
 
 // One .env.local at the monorepo root serves the app and the scripts.
 const ROOT = path.resolve(process.cwd(), "../..");
-loadEnvConfig(ROOT, process.env.NODE_ENV !== "production");
+loadEnvConfig(ROOT, process.env.NODE_ENV !== "production", undefined, true);
 
 const nextConfig: NextConfig = {
   output: "standalone",
   // Workspace packages ship TypeScript source.
   transpilePackages: ["@sats/core", "@sats/lightning", "@sats/nostr", "@sats/ai", "@sats/ui", "@sats/payouts"],
   // Server-only libraries that must not be bundled into the client.
-  serverExternalPackages: ["@google/genai", "postgres"],
+  serverExternalPackages: ["@google/genai", "postgres", "sharp"],
   // Trace files from the monorepo root so the standalone output includes workspace packages.
   outputFileTracingRoot: ROOT,
   poweredByHeader: false,

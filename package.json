@@ -18,7 +18,9 @@
     "nwc:probe": "tsx scripts/nwc-probe.ts",
     "nwc:latency": "tsx scripts/nwc-latency.ts",
     "seed": "tsx scripts/seed.ts",
-    "demo": "pnpm install && tsx scripts/demo.ts"
+    "demo": "pnpm install && tsx scripts/demo.ts",
+    "db:migrate": "tsx scripts/migrate.ts",
+    "seed:geo": "tsx scripts/seed.ts"
   },
   "devDependencies": {
     "@types/node": "^24.19.2",
