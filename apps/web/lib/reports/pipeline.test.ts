@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { PGlite } from "@electric-sql/pglite";
 import { postgis } from "@electric-sql/pglite-postgis";
 import { drizzle } from "drizzle-orm/pglite";
@@ -26,6 +26,8 @@ let pg: PGlite;
 let db: Db;
 let seed = 100;
 const photo = () => makeJpeg(seed++);
+// PGlite + PostGIS is slow under a parallel full-suite run; each test does several sharp + SQL round trips.
+vi.setConfig({ testTimeout: 30_000 });
 const restoreLog = setLogSink(() => {});
 
 beforeAll(async () => {
