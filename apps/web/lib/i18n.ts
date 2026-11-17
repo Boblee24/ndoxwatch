@@ -169,3 +169,31 @@ extendDict("pcm", {
   "w.claim_err.BUDGET_REACHED": "Funder money don finish for now.",
   "w.claim_err.DAILY_CAP": "Today limit don reach. Try tomorrow.",
 });
+
+extendDict("en", {
+  "m.title": "Flood map",
+  "m.privacy": "{n} accepted reports. Shown as ~5 km squares only, never exact locations, to protect reporters.",
+  "m.mask": "Satellite flood map (Sentinel-1)",
+  "m.toggle": "Show the satellite flood map",
+  "m.source": "Satellite layer: {source}, before {pre}, after {post}. A guide only: it misses flooding in dense streets and under vegetation.",
+  "m.placeholder": "Satellite layer: PLACEHOLDER shape, not real satellite data yet.",
+  "w.claim_err.PAUSED": "Payouts are paused by the funder. Your sats are safe; try later.",
+});
+extendDict("fr", {
+  "m.title": "Carte des inondations",
+  "m.privacy": "{n} signalements acceptés. Affichés par carrés d'environ 5 km, jamais la position exacte, pour protéger les signaleurs.",
+  "m.mask": "Carte satellite des inondations (Sentinel-1)",
+  "m.toggle": "Afficher la carte satellite",
+  "m.source": "Couche satellite : {source}, avant {pre}, après {post}. Indicative : elle rate les inondations en ville dense et sous la végétation.",
+  "m.placeholder": "Couche satellite : forme PROVISOIRE, pas encore de vraies données satellite.",
+  "w.claim_err.PAUSED": "Paiements suspendus par le financeur. Vos sats sont gardés ; réessayez plus tard.",
+});
+extendDict("pcm", {
+  "m.title": "Flood map",
+  "m.privacy": "{n} report wey pass. We show am as ~5 km box only, no exact place, to protect people wey report.",
+  "m.mask": "Satellite flood map (Sentinel-1)",
+  "m.toggle": "Show satellite flood map",
+  "m.source": "Satellite layer: {source}, before {pre}, after {post}. Na guide only: e dey miss flood for tight streets and under bush.",
+  "m.placeholder": "Satellite layer: PLACEHOLDER shape, no be real satellite data yet.",
+  "w.claim_err.PAUSED": "Funder don pause payment. Your sats dey safe; try later.",
+});

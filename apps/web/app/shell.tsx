@@ -24,6 +24,9 @@ export function Shell({ children, demo }: { children: ReactNode; demo: boolean; 
           💧 NdoxWatch
         </Link>
         <nav className="flex items-center gap-3">
+          <Link href="/map" className="font-medium underline-offset-4 hover:underline">
+            Map
+          </Link>
           <Link href="/wallet" className="font-medium underline-offset-4 hover:underline">
             Wallet
           </Link>

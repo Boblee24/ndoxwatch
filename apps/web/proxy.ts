@@ -6,7 +6,12 @@ import { buildCsp, type CspExtra } from "@sats/core/csp";
  *   { prefix: "/map", extra: { connect: ["https://tiles.openfreemap.org"], worker: ["blob:"] } }
  * Routes not listed get the strict starter CSP.
  */
-const ROUTE_EXTRAS: Array<{ prefix: string; extra: CspExtra }> = [];
+// NdoxWatch: MapLibre + OpenFreeMap (style, vector tiles, glyphs and sprites are all on this origin), only on the map pages.
+const MAP_EXTRA: CspExtra = { connect: ["https://tiles.openfreemap.org"], img: ["https://tiles.openfreemap.org"], worker: ["blob:"] };
+const ROUTE_EXTRAS: Array<{ prefix: string; extra: CspExtra }> = [
+  { prefix: "/map", extra: MAP_EXTRA },
+  { prefix: "/funder", extra: MAP_EXTRA },
+];
 
 export function proxy(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
@@ -31,7 +36,7 @@ export function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     {
-      source: "/((?!api|_next/static|_next/image|favicon.ico|icon.svg|sw.js|voice/).*)",
+      source: "/((?!api|_next/static|_next/image|favicon.ico|icon.svg|sw.js|voice/|vendor/).*)",
       missing: [
         { type: "header", key: "next-router-prefetch" },
         { type: "header", key: "purpose", value: "prefetch" },

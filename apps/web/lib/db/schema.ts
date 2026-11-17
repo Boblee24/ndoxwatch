@@ -120,4 +120,13 @@ CREATE TABLE IF NOT EXISTS report_photos (
   created_at timestamptz NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS report_photos_created_idx ON report_photos (created_at);
+
+ALTER TABLE reports ADD COLUMN IF NOT EXISTS reviewed_at timestamptz;
+ALTER TABLE reports ADD COLUMN IF NOT EXISTS review_decision text;
+
+CREATE TABLE IF NOT EXISTS app_settings (
+  key text PRIMARY KEY,
+  value jsonb NOT NULL,
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
 `;

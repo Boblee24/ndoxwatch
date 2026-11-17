@@ -3,6 +3,7 @@ import { errorCode } from "@sats/core/errors";
 import { log } from "@sats/core/log";
 import { clientKey, createRateLimiter } from "@sats/core/rateLimit";
 import { claim } from "@sats/payouts";
+import { isPaused } from "@/lib/admin";
 import { getDb } from "@/lib/db";
 import { claimBodySchema, verifyClaimEvent } from "@/lib/claims";
 import { getSponsor } from "@/lib/sponsor";
@@ -18,7 +19,9 @@ export async function POST(req: Request) {
   const auth = verifyClaimEvent(body.data.event);
   if (!auth.ok) return NextResponse.json({ status: "rejected", code: auth.code }, { status: 400 });
   try {
-    const [db, sponsor] = await Promise.all([getDb(), getSponsor()]);
+    const db = await getDb();
+    if (await isPaused(db)) return NextResponse.json({ status: "rejected", code: "PAUSED" });
+    const sponsor = await getSponsor();
     const r = await claim(db, sponsor.wallet, { pubkey: auth.pubkey, bolt11: auth.bolt11, limits: sponsor.limits });
     return NextResponse.json(r);
   } catch (err) {
