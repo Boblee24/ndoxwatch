@@ -157,6 +157,13 @@ describe("steps 5–7: satellite prior, AI, score", () => {
     expect(await claimableSats(db, s.event.pubkey)).toBe(0);
   });
 
+  it("AI call throwing → review (never auto-paid)", async () => {
+    const throwing: PipelineDeps = { checkPhoto: async () => { throw new Error("api down"); } };
+    const s = await signedReport({ sk: newReporter(), ...DEMO, photo: await photo() });
+    expect(await submitReport(db, s, throwing)).toMatchObject({ status: "review", score: null });
+    expect(await claimableSats(db, s.event.pubkey)).toBe(0);
+  });
+
   it("AI failure → review; screen photo → rejected", async () => {
     aiResult = null;
     expect((await submitReport(db, await signedReport({ sk: newReporter(), ...DEMO, photo: await photo() }), deps)).status).toBe("review");

@@ -20,7 +20,8 @@
     "seed": "tsx scripts/seed.ts",
     "demo": "pnpm install && tsx scripts/demo.ts",
     "db:migrate": "tsx scripts/migrate.ts",
-    "seed:geo": "tsx scripts/seed.ts"
+    "seed:geo": "tsx scripts/seed.ts",
+    "attack": "tsx scripts/attack.ts"
   },
   "devDependencies": {
     "@types/node": "^24.19.2",

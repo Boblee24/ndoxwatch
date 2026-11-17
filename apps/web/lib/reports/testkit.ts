@@ -10,15 +10,21 @@ import { sha256Hex } from "./verify";
 export async function makeJpeg(seed: number, o: { quality?: number; size?: number } = {}): Promise<Buffer> {
   const w = o.size ?? 320;
   const h = Math.round(w * 0.75);
+  // Smooth scene for ANY seed: 3 low-frequency waves (0.5–3 cycles across the frame) with seeded
+  // directions and phases. High frequencies would alias when resized, which real photos don't.
+  let st = (seed * 2654435761) >>> 0 || 1;
+  const rnd = () => ((st = (st * 1664525 + 1013904223) >>> 0) / 2 ** 32);
+  const waves = [0, 1, 2].map(() => ({ fx: (rnd() - 0.5) * 6, fy: (rnd() - 0.5) * 6, ph: rnd() * 6.283, a: 0.5 + rnd() }));
   const px = Buffer.alloc(w * h * 3);
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
       const u = x / w;
       const t = y / h;
-      const v = Math.floor(127 + 120 * Math.sin(u * (seed + 1) * 3.1 + seed) * Math.cos(t * (seed + 2) * 2.3 - seed * 1.7));
+      const s = waves.reduce((acc, k) => acc + k.a * Math.sin(6.283 * (k.fx * u + k.fy * t) + k.ph), 0);
+      const v = Math.max(0, Math.min(255, Math.floor(127 + 55 * s)));
       const i = (y * w + x) * 3;
       px[i] = v;
-      px[i + 1] = (v + seed * 40) & 255;
+      px[i + 1] = (v + 60) & 255;
       px[i + 2] = 255 - v;
     }
   }
