@@ -135,3 +135,37 @@ extendDict("pcm", {
   "home.lead": "Satellite dey show where to look; you go show wetin dem miss. Snap the water, tap how deep e be, collect sats when the report pass check.",
   "home.report": "Report water",
 });
+
+extendDict("en", {
+  "w.rewards": "Report rewards ready to claim",
+  "w.claim": "Claim to my wallet",
+  "w.claiming": "Claiming…",
+  "w.auto": "Claim automatically when I open the wallet",
+  "w.claimed": "+{sats} sats sent to your wallet",
+  "w.claim_pending": "Payment is on its way. Check again in a minute.",
+  "w.claim_err": "Could not claim ({code}). Try again later.",
+  "w.claim_err.BUDGET_REACHED": "The funder's budget is used up for now.",
+  "w.claim_err.DAILY_CAP": "Today's payout limit is reached. Try tomorrow.",
+});
+extendDict("fr", {
+  "w.rewards": "Récompenses à réclamer",
+  "w.claim": "Envoyer vers mon portefeuille",
+  "w.claiming": "Envoi…",
+  "w.auto": "Réclamer automatiquement à l'ouverture",
+  "w.claimed": "+{sats} sats envoyés",
+  "w.claim_pending": "Paiement en cours. Revérifiez dans une minute.",
+  "w.claim_err": "Échec ({code}). Réessayez plus tard.",
+  "w.claim_err.BUDGET_REACHED": "Le budget du financeur est épuisé pour l'instant.",
+  "w.claim_err.DAILY_CAP": "Limite du jour atteinte. Réessayez demain.",
+});
+extendDict("pcm", {
+  "w.rewards": "Report money wey you fit collect",
+  "w.claim": "Send am to my wallet",
+  "w.claiming": "E dey send…",
+  "w.auto": "Collect am by itself when I open wallet",
+  "w.claimed": "+{sats} sats don enter your wallet",
+  "w.claim_pending": "Money dey come. Check again small time.",
+  "w.claim_err": "E no work ({code}). Try again later.",
+  "w.claim_err.BUDGET_REACHED": "Funder money don finish for now.",
+  "w.claim_err.DAILY_CAP": "Today limit don reach. Try tomorrow.",
+});
