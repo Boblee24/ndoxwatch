@@ -4,12 +4,15 @@ import { errorCode } from "@sats/core/errors";
 import { log } from "@sats/core/log";
 import { claimableSats } from "@sats/payouts";
 import { getDb } from "@/lib/db";
+import { publicRateLimit } from "@/lib/http";
 
 export const runtime = "nodejs";
 const query = z.object({ pubkey: z.string().regex(/^[0-9a-f]{64}$/) });
 
 /** GET /api/rewards?pubkey=<hex> → { claimable } (integer sats). */
 export async function GET(req: Request) {
+  const limited = publicRateLimit(req, "rewards");
+  if (limited) return limited;
   const q = query.safeParse(Object.fromEntries(new URL(req.url).searchParams));
   if (!q.success) return NextResponse.json({ code: "BAD_INPUT" }, { status: 400 });
   try {

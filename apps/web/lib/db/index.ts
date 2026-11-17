@@ -19,6 +19,14 @@ export async function migrateNdox(db: Db): Promise<void> {
   await migratePayouts(db);
 }
 
+/** For CLI scripts: one connection, Postgres NOTICEs ("already exists, skipping") silenced. */
+export async function createScriptDb(url: string): Promise<{ db: Db; end: () => Promise<void> }> {
+  const { default: postgres } = await import("postgres");
+  const { drizzle } = await import("drizzle-orm/postgres-js");
+  const client = postgres(url, { prepare: false, max: 1, onnotice: () => {} });
+  return { db: drizzle(client) as unknown as Db, end: () => client.end() };
+}
+
 let cached: Db | undefined;
 
 /** App database (server only). Lazily created from DATABASE_URL. */

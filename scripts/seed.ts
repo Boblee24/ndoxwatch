@@ -9,14 +9,13 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { loadEnvLocal } from "./_env";
-import { createDb } from "../packages/payouts/src/db";
-import { migrateNdox, type Db } from "../apps/web/lib/db";
+import { createScriptDb, migrateNdox } from "../apps/web/lib/db";
 import { deletePlaceholderMasks, geometryOf, parseCenter, upsertCircleZone, upsertMask, upsertZone } from "../apps/web/lib/geo/seed";
 
 loadEnvLocal();
 const url = process.env.DATABASE_URL;
 if (!url) throw new Error("DATABASE_URL is not set (see .env.example)");
-const db = createDb(url, { max: 1 }) as unknown as Db;
+const { db, end } = await createScriptDb(url);
 const SEED = resolve(process.cwd(), "seed");
 const readJson = (f: string) => JSON.parse(readFileSync(resolve(SEED, f), "utf8"));
 
@@ -77,4 +76,5 @@ where you'll demo in Akure), then run: pnpm seed
 Without it there is no live demo zone, and live reports are rejected OUTSIDE_ZONE.
 ======================`);
 }
+await end();
 process.exit(0);

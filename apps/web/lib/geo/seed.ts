@@ -58,6 +58,35 @@ export function parseCenter(v: string | undefined): { lat: number; lon: number }
   return Math.abs(lat) <= 90 && Math.abs(lon) <= 180 ? { lat, lon } : null;
 }
 
+/**
+ * Random points inside a zone for synthetic personas: `inMaskShare` of them inside the flood mask
+ * (where a satellite saw water), the rest anywhere in the zone (some will be "Satellite missed?").
+ */
+export async function samplePoints(db: Db, zoneId: string, n: number, inMaskShare = 0.6): Promise<Array<{ lat: number; lon: number }>> {
+  const k = Math.round(n * inMaskShare);
+  const { q } = await import("../db");
+  const inMask = k
+    ? await q<{ lat: number; lon: number }>(
+        db,
+        sql`SELECT ST_Y(d.geom) AS lat, ST_X(d.geom) AS lon FROM (
+              SELECT (ST_Dump(ST_GeneratePoints(ST_Intersection(z.geom, ST_Union(m.geom)), ${k}))).geom
+              FROM zones z, flood_mask m WHERE z.id = ${zoneId} AND ST_Intersects(z.geom, m.geom) GROUP BY z.geom) d`,
+      )
+    : [];
+  const rest = await q<{ lat: number; lon: number }>(
+    db,
+    sql`SELECT ST_Y(d.geom) AS lat, ST_X(d.geom) AS lon FROM (
+          SELECT (ST_Dump(ST_GeneratePoints(geom, ${n - inMask.length}))).geom FROM zones WHERE id = ${zoneId}) d`,
+  );
+  return [...inMask, ...rest].map((p) => ({ lat: Number(Number(p.lat).toFixed(6)), lon: Number(Number(p.lon).toFixed(6)) }));
+}
+
 export async function deletePlaceholderMasks(db: Db): Promise<void> {
   await db.execute(sql`DELETE FROM flood_mask WHERE source = 'placeholder'`);
+}
+
+export async function activeReportCount(db: Db, zoneId: string): Promise<number> {
+  const { q } = await import("../db");
+  const [r] = await q<{ n: number }>(db, sql`SELECT count(*)::int AS n FROM reports WHERE zone_id = ${zoneId} AND status <> 'rejected'`);
+  return Number(r?.n ?? 0);
 }

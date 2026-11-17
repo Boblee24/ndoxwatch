@@ -1,0 +1,5 @@
+[
+  { "file": "water_knee_01.jpg", "water_visible": true, "depth": "knee", "screen_or_print": false },
+  { "file": "dry_street_01.jpg", "water_visible": false, "depth": "none", "screen_or_print": false },
+  { "file": "tv_screen_flood.jpg", "water_visible": true, "depth": "waist", "screen_or_print": true }
+]
