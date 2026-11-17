@@ -3,27 +3,27 @@
 Session C. Start: **Tue 12:30 WAT**. Tick the boxes as you go and keep every time box.
 
 ## Phase 1: Geo data + reporter flow (Tue 12:30–17:00)
-- [ ] Rename to `ndoxwatch`; Drizzle schema (CLAUDE.md) + raw SQL migration enabling `postgis`, with GIST indexes on `zones.geom`, `flood_mask.geom` and `reports.geom`
-- [ ] `docker compose --profile db up` works locally (PostGIS image)
-- [ ] Loaders: `pnpm seed:geo` loads `seed/zones.geojson` and `seed/flood_mask_*.geojson` (use `ST_GeomFromGeoJSON`, then `ST_Multi`, `ST_MakeValid`, and `ST_SimplifyPreserveTopology` if large)
+- [x] Rename to `ndoxwatch`; Drizzle schema (CLAUDE.md) + raw SQL migration enabling `postgis`, with GIST indexes on `zones.geom`, `flood_mask.geom` and `reports.geom`
+- [x] `docker compose --profile db up` works locally (PostGIS image)
+- [x] Loaders: `pnpm seed:geo` loads `seed/zones.geojson` and `seed/flood_mask_*.geojson` (use `ST_GeomFromGeoJSON`, then `ST_Multi`, `ST_MakeValid`, and `ST_SimplifyPreserveTopology` if large)
   - Until the human delivers the GEE export, generate a **placeholder** mask polygon around Rufisque and mark it `source: "placeholder"`
   - Demo zone from `DEMO_ZONE_CENTER` (2 km buffer via `ST_Buffer(geography)`)
 - [ ] HUMAN TODO: GEE flood mask per `GEE_FLOOD_MASK.md` → drop the GeoJSON into `seed/`
 - [ ] `/report` (mobile-first, 3 taps):
-  - [ ] `<input type="file" accept="image/*" capture="environment">` → canvas downscale ≤1024px, JPEG q0.7 → sha256
-  - [ ] `navigator.geolocation` (high accuracy, 15 s timeout) → show accuracy; warn if > 100 m
-  - [ ] Depth chips with icons (ankle / knee / waist / impassable), big and labelled
-  - [ ] Sign the event (CLAUDE.md "Report signing") with `ngeohash` for geohash5/7/9
-  - [ ] `POST /api/reports` multipart
-- [ ] Server: steps 1–2 of the pipeline (verify + zone), store the report + photo
-- [ ] **Checkpoint:** a phone report inside the demo zone is stored, and one outside is rejected with `OUTSIDE_ZONE`
+  - [x] `<input type="file" accept="image/*" capture="environment">` → canvas downscale ≤1024px, JPEG q0.7 → sha256
+  - [x] `navigator.geolocation` (high accuracy, 15 s timeout) → show accuracy; warn if > 100 m
+  - [x] Depth chips with icons (ankle / knee / waist / impassable), big and labelled
+  - [x] Sign the event (CLAUDE.md "Report signing") with `ngeohash` for geohash5/7/9
+  - [x] `POST /api/reports` multipart
+- [x] Server: steps 1–2 of the pipeline (verify + zone), store the report + photo
+- [x] **Checkpoint:** a phone report inside the demo zone is stored, and one outside is rejected with `OUTSIDE_ZONE` (verified in tests + over HTTP with `scripts/smoke-report.ts`; on a real phone still HUMAN TODO, needs `DEMO_ZONE_CENTER`)
 
 ## Phase 2: Pipeline + payouts + offline (Tue 17:00–23:00)
-- [ ] `lib/dhash.ts` (sharp 9×8 grayscale → 64-bit) + Hamming + tests (same image re-encoded → ≤ 6; different image → > 6)
-- [ ] Pipeline steps 3–5 (caps, duplicate, satellite prior) + step 7 scoring (until Phase 3, treat a missing AI result as `review`) + tests
-- [ ] Rewards: `accrue` on `auto_ok`; `/wallet` WalletPanel + claimable + **auto-claim** (client invoice for the exact claimable amount → `POST /api/claim`)
-- [ ] Result card on the phone: each check ✓/✗ with a plain-language reason (EN/FR/Pidgin)
-- [ ] Offline queue: if the network fails, store the signed report + photo in IndexedDB → retry with backoff → "Saved, will send when you have signal". Drop queued items older than 6 h with a "too old to send" message (the server's time window). Test: a report signed 2 h ago is accepted; the same event sent twice → second one rejected as a replay.
+- [x] `lib/dhash.ts` (sharp 9×8 grayscale → 64-bit) + Hamming + tests (same image re-encoded → ≤ 6; different image → > 6)
+- [x] Pipeline steps 3–5 (caps, duplicate, satellite prior) + step 7 scoring (until Phase 3, treat a missing AI result as `review`) + tests
+- [x] Rewards: `accrue` on `auto_ok`; `/wallet` WalletPanel + claimable + **auto-claim** (client invoice for the exact claimable amount → `POST /api/claim`)
+- [x] Result card on the phone: each check ✓/✗ with a plain-language reason (EN/FR/Pidgin)
+- [x] Offline queue: if the network fails, store the signed report + photo in IndexedDB → retry with backoff → "Saved, will send when you have signal". Drop queued items older than 6 h with a "too old to send" message (the server's time window). Test: a report signed 2 h ago is accepted; the same event sent twice → second one rejected as a replay.
 - [ ] `scripts/personas.ts`: 3 personas submit about 20 synthetic reports in the Rufisque replay zone (seed photos: HUMAN TODO, 10 of your own photos of standing water, gutters and dry streets; no faces)
 - [ ] HUMAN TODO: faucet wallets `funder` (`SPONSOR_NWC_URL`), `persona1–3`, `live-reporter`
 - [ ] **Checkpoint (23:00):** a live report from your phone in the demo zone → `auto_ok` (AI mocked) → sats land in the reporter wallet
