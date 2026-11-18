@@ -1,0 +1,205 @@
+[
+  {
+    "file": "water_01.jpg",
+    "water_visible": true,
+    "depth": "knee",
+    "screen_or_print": false,
+    "source": "Floods in Nigeria"
+  },
+  {
+    "file": "water_03.jpg",
+    "water_visible": true,
+    "depth": "knee",
+    "screen_or_print": false,
+    "source": "Floods in Nigeria"
+  },
+  {
+    "file": "water_04.jpg",
+    "water_visible": true,
+    "depth": "ankle",
+    "screen_or_print": false,
+    "source": "Floods in Nigeria"
+  },
+  {
+    "file": "water_05.jpg",
+    "water_visible": true,
+    "depth": "knee",
+    "screen_or_print": false,
+    "source": "Floods in Nigeria"
+  },
+  {
+    "file": "water_06.jpg",
+    "water_visible": true,
+    "depth": "ankle",
+    "screen_or_print": false,
+    "source": "Floods in Nigeria"
+  },
+  {
+    "file": "water_07.jpg",
+    "water_visible": true,
+    "depth": "knee",
+    "screen_or_print": false,
+    "source": "Floods in Nigeria"
+  },
+  {
+    "file": "water_09.jpg",
+    "water_visible": true,
+    "depth": "knee",
+    "screen_or_print": false,
+    "source": "Floods in Senegal"
+  },
+  {
+    "file": "water_10.jpg",
+    "water_visible": true,
+    "depth": "ankle",
+    "screen_or_print": false,
+    "source": "Floods in Senegal"
+  },
+  {
+    "file": "water_11.jpg",
+    "water_visible": true,
+    "depth": "ankle",
+    "screen_or_print": false,
+    "source": "Floods in Senegal"
+  },
+  {
+    "file": "water_12.jpg",
+    "water_visible": true,
+    "depth": "ankle",
+    "screen_or_print": false,
+    "source": "Floods in Senegal"
+  },
+  {
+    "file": "water_13.jpg",
+    "water_visible": true,
+    "depth": "impassable",
+    "screen_or_print": false,
+    "source": "Flooded roads"
+  },
+  {
+    "file": "water_16.jpg",
+    "water_visible": true,
+    "depth": "waist",
+    "screen_or_print": false,
+    "source": "Flooded roads"
+  },
+  {
+    "file": "water_18.jpg",
+    "water_visible": true,
+    "depth": "knee",
+    "screen_or_print": false,
+    "source": "Flooded roads"
+  },
+  {
+    "file": "water_20.jpg",
+    "water_visible": true,
+    "depth": "ankle",
+    "screen_or_print": false,
+    "source": "Puddles"
+  },
+  {
+    "file": "dry_street_03.jpg",
+    "water_visible": false,
+    "depth": "none",
+    "screen_or_print": false,
+    "source": "Streets in Abuja"
+  },
+  {
+    "file": "dry_street_04.jpg",
+    "water_visible": false,
+    "depth": "none",
+    "screen_or_print": false,
+    "source": "Streets in Abuja"
+  },
+  {
+    "file": "dry_street_05.jpg",
+    "water_visible": false,
+    "depth": "none",
+    "screen_or_print": false,
+    "source": "Streets in Abuja"
+  },
+  {
+    "file": "dry_street_06.jpg",
+    "water_visible": false,
+    "depth": "none",
+    "screen_or_print": false,
+    "source": "Streets in Abuja"
+  },
+  {
+    "file": "dry_street_07.jpg",
+    "water_visible": false,
+    "depth": "none",
+    "screen_or_print": false,
+    "source": "Streets in Dakar"
+  },
+  {
+    "file": "dry_street_08.jpg",
+    "water_visible": false,
+    "depth": "none",
+    "screen_or_print": false,
+    "source": "Streets in Dakar"
+  },
+  {
+    "file": "dry_street_10.jpg",
+    "water_visible": false,
+    "depth": "none",
+    "screen_or_print": false,
+    "source": "Streets in Dakar"
+  },
+  {
+    "file": "dry_street_12.jpg",
+    "water_visible": false,
+    "depth": "none",
+    "screen_or_print": false,
+    "source": "Roads in Nigeria"
+  },
+  {
+    "file": "dry_street_13.jpg",
+    "water_visible": false,
+    "depth": "none",
+    "screen_or_print": false,
+    "source": "Roads in Nigeria"
+  },
+  {
+    "file": "dry_street_14.jpg",
+    "water_visible": false,
+    "depth": "none",
+    "screen_or_print": false,
+    "source": "Roads in Nigeria"
+  },
+  {
+    "file": "dry_street_15.jpg",
+    "water_visible": false,
+    "depth": "none",
+    "screen_or_print": false,
+    "source": "Roads in Nigeria"
+  },
+  {
+    "file": "dark_water_03.jpg",
+    "water_visible": true,
+    "depth": "knee",
+    "screen_or_print": false,
+    "source": "derived from water_03.jpg (dark)"
+  },
+  {
+    "file": "dark_dry_street_08.jpg",
+    "water_visible": false,
+    "depth": "none",
+    "screen_or_print": false,
+    "source": "derived from dry_street_08.jpg (dark)"
+  },
+  {
+    "file": "blurry_water_10.jpg",
+    "water_visible": true,
+    "depth": "ankle",
+    "screen_or_print": false,
+    "source": "derived from water_10.jpg (blurry)"
+  },
+  {
+    "file": "blurry_dry_street_04.jpg",
+    "water_visible": false,
+    "depth": "none",
+    "screen_or_print": false,
+    "source": "derived from dry_street_04.jpg (blurry)"
+  }
+]
