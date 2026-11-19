@@ -47,6 +47,7 @@ anyone ⇄ /map (geohash5 cells only)
 | Admin token guessing / timing | SHA-256 + `timingSafeEqual`; 5 wrong tries then 1/min per client; admin APIs rate-limited | `admin.test.ts` |
 | CSV injection in exports | every cell quoted; text cells starting with `= + - @` prefixed | `/api/admin/export` |
 | XSS / injected scripts | per-request nonce CSP; map origins added for `/map` and `/funder` only; no `dangerouslySetInnerHTML` | `csp.test.ts` |
+| Reporter wallet connection fails on a slow relay | connect retries once with a fresh client and a longer timeout; a wallet-side error (wrong secret) is not retried | `hooks.test.ts` |
 | Flooding the API | token-bucket rate limits per hashed client key on reports, claims, public map data, admin; 400 KB photo cap checked before parsing | route code |
 | PII in logs | allowlisted logger; audit test runs every attack path and scans the logs | `logaudit.test.ts`, `log.test.ts` |
 | Satellite overclaiming | the mask is a prior worth +1 point, never a judge; outside-the-mask water goes to human review ("Satellite missed?"); the map labels the source and date windows | `score.test.ts` |
@@ -57,7 +58,11 @@ anyone ⇄ /map (geohash5 cells only)
 - **In-memory rate limits** reset on deploy and are per instance on serverless. Good enough for a pilot; use a shared store (e.g. Postgres or Redis) before scale.
 - **AI false negatives/positives**: measured in `eval/RESULTS.md`; humans review the uncertain middle.
 - **Admin token in a browser tab**: a compromised funder laptop exposes precise locations and photos from the last 7 days. Rotate the token after each deployment window.
-- **Dev mode CSP** blocks some inline styles (starter issue); production CSP is unchanged.
+- **Mocked AI in the demo deployment:** until `GEMINI_API_KEY` is set, `AI_MOCK=1` answers "water visible" for every
+  photo, so on the demo the screen/print and dry-street rejections only happen in `pnpm attack`, not live. Never run a
+  real bounty with `AI_MOCK=1`.
+- **Dev mode CSP:** Next's dev overlay injects an un-nonced `<style>`, which the CSP blocks (console noise in
+  `pnpm dev` only). The production build has no CSP violations on `/`, `/report` and `/map` (checked Nov 19, 2026).
 
 ## What we log / never log
 - **Log:** event name, id (report/claim uuid), paymentHash, latencyMs, status, code, count.

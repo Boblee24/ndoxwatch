@@ -46,5 +46,5 @@ Session C. Start: **Tue 12:30 WAT**. Tick the boxes as you go and keep every tim
 ## Phase 5: Polish + docs (Wed 20:00–Thu 10:00)
 - [ ] Slow 3G pass: first-load JS for `/report` < 150 KB (the map is never loaded on `/report`); measure and record
 - [ ] UI strings `en`, `fr`, `pcm`; 48px+ targets; high contrast
-- [ ] README from the template: problem + sources, why Bitcoin/Nostr/AI, the GIS method (pre/post windows, thresholds, limits), eval + attack tables, security, setup, **what's simulated** (replayed event, demo zone, personas, faucet sats), next steps
+- [x] README from the template: problem + sources, why Bitcoin/Nostr/AI, the GIS method (pre/post windows, thresholds, limits), eval + attack tables, security, setup, **what's simulated** (replayed event, demo zone, personas, faucet sats), next steps
 - [ ] Final: fresh clone in Codespaces → one command works
