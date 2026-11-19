@@ -5,6 +5,8 @@
  * dHash, satellite prior, AI, score, reward). Clearly synthetic: the README says so.
  *  - Photos: seed/photos/*.jpg (HUMAN TODO: ~10–20 of your own photos of standing water / gutters / dry streets,
  *    no faces). Each photo is used once (reusing one would be a DUPLICATE, as it should be).
+ *    --from-eval: use the original water_*.jpg photos from eval/photos (Wikimedia Commons stock, see CREDITS.md),
+ *    with the depth from their label. Stock photos, not field reports: the README says so.
  *    --placeholder: generate abstract images instead (only meaningful with AI_MOCK=1).
  *  - Keys: persona1–3 keys live in .env.local (PERSONA1_NSEC…), created on first run; their wallets
  *    (HUMAN TODO) can then claim. Extra photos go to one-off "crowd" keys (1 report each).
@@ -32,8 +34,16 @@ if (!url) throw new Error("DATABASE_URL is not set");
 const PHOTO_DIR = join(process.cwd(), "seed", "photos");
 const files = existsSync(PHOTO_DIR) ? readdirSync(PHOTO_DIR).filter((f) => /\.(jpe?g|png|webp|heic)$/i.test(f)).sort() : [];
 let photos: Buffer[];
+let photoDepths: Depth[] | null = null;
+const EVAL_DIR = join(process.cwd(), "eval", "photos");
 if (files.length > 0) {
   photos = await Promise.all(files.map((f) => reencodeJpeg(readFileSync(join(PHOTO_DIR, f)))));
+} else if (args.has("--from-eval") && existsSync(join(EVAL_DIR, "labels.json"))) {
+  // Originals only (dark_/blurry_ variants are derived from these and would be DUPLICATEs, correctly).
+  const labels = JSON.parse(readFileSync(join(EVAL_DIR, "labels.json"), "utf8")) as Array<{ file: string; water_visible: boolean; depth: string }>;
+  const wet = labels.filter((l) => /^water_\d+\.jpg$/.test(l.file) && l.water_visible && l.depth !== "none");
+  photos = await Promise.all(wet.map((l) => reencodeJpeg(readFileSync(join(EVAL_DIR, l.file)))));
+  photoDepths = wet.map((l) => l.depth as Depth);
 } else if (args.has("--placeholder")) {
   if (process.env.AI_MOCK !== "1") console.warn("! --placeholder images are abstract patterns; a real AI check will reject them. Use AI_MOCK=1.");
   photos = await Promise.all(Array.from({ length: TARGET }, (_, i) => makeJpeg(70_000 + i)));
@@ -42,7 +52,8 @@ if (files.length > 0) {
 ===== HUMAN TODO =====
 Put ~10–20 of your own photos in seed/photos/ (standing water at ankle/knee depth, gutters, a couple of
 dry streets; no faces, no plates), then run: pnpm personas
-(or try it now with abstract placeholder images: AI_MOCK=1 pnpm personas --placeholder)
+(or use the labelled stock photos: pnpm personas --from-eval;
+ or abstract placeholder images: AI_MOCK=1 pnpm personas --placeholder)
 ======================`);
   process.exit(0);
 }
@@ -81,7 +92,7 @@ for (let i = 0; i < photos.length; i++) {
     sk,
     ...points[i]!,
     photo: photos[i]!,
-    depth: DEPTHS[i % DEPTHS.length]!,
+    depth: photoDepths?.[i] ?? DEPTHS[i % DEPTHS.length]!,
     accuracyM: 8 + (i % 5) * 9,
     createdAt: now - 600 - Math.floor(Math.random() * 4 * 3600), // spread over the last ~4 h
   });
