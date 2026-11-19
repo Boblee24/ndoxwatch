@@ -39,7 +39,8 @@ export const checkPhotoWithAi: CheckPhotoFn = async (jpeg) => {
     schema: aiPhotoSchema,
     system: SYSTEM,
     parts: [{ image: { mime: "image/jpeg", base64: Buffer.from(jpeg).toString("base64") } }],
-    timeoutMs: 15_000,
+    // gemini-3.5-flash-lite answered in 4–13 s in pnpm eval (Nov 2026); 15 s sent ~1 in 6 reports to review.
+    timeoutMs: 25_000,
     fixture: PHOTO_FIXTURE,
   });
   return r.ok ? r.data : null;

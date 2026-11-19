@@ -77,10 +77,24 @@ instead of 6, so they can still auto-approve.
   `outdoor`, `screen_or_print`, `confidence`, `flags`.
 - **What it can't do:** set amounts, pick recipients, approve payouts. Code scores the report; the amount comes
   from the zone. If the AI call fails, the report goes to a human, never auto-paid.
-- **Eval:** `pnpm eval` runs the check on 29 labelled photos (see [Seed data](#seed-data)) and writes
-  `eval/RESULTS.md`. **No Gemini key was available before the deadline**, so the committed file is
-  [`eval/RESULTS.mock.md`](eval/RESULTS.mock.md): it was run with `AI_MOCK` fixtures and measures the harness, not
-  the model. Its 55% precision is the fixture answering "water, knee" for every photo, dry streets included.
+- **Eval:** `pnpm eval` runs the real model (`gemini-3.5-flash-lite`) on 29 labelled stock photos (see
+  [Seed data](#seed-data)) → [`eval/RESULTS.md`](eval/RESULTS.md). The depth labels are Claude's visual judgement,
+  not measured ground truth, and 29 photos is a small sample.
+
+  | Metric (Nov 19, 2026) | Result |
+  |---|---|
+  | AI call success | 29/29 (100%) |
+  | `water_visible` precision / recall | 100% (15/15) / 94% (15/16) |
+  | Depth within one class / exact | 88% (14/16) / 56% (9/16) |
+  | Real scenes wrongly flagged as screen/print | 0/29 |
+  | Latency p50 / p95 | 3.0 s / 20.2 s |
+  | Cost per report | ≈ $0.00056 (≈ $0.56 per 1,000 reports): 1,332 input + 65 output tokens at $0.30 / $2.50 per 1M ([Gemini API pricing](https://ai.google.dev/gemini-api/docs/pricing)) |
+
+  What it gets wrong: it missed shallow puddles in a car park (`water_20`, "no water" at 0.95, which the rules
+  would reject as `NO_WATER`), and it tends to read depth one class shallower (knee → ankle). **Not measured:** the
+  `screen_or_print` catch rate, because the set has no screen/print photos yet; that rejection is covered by
+  `eval/ATTACKS.md` with an injected verdict. The first run used a 15 s timeout and 5/29 calls timed out (they would
+  have gone to review); the AI timeout is now 25 s.
 - **Rules:** [`eval/ATTACKS.md`](eval/ATTACKS.md): 20/20 attack cases behave as designed (real pipeline and claim
   code against in-process PostGIS; AI verdicts injected per case).
 
@@ -150,7 +164,9 @@ Other scripts: `pnpm attack` (→ `eval/ATTACKS.md`), `pnpm eval` (→ `eval/RES
 | Attack cases handled as designed | 20 / 20 | `pnpm attack` → [eval/ATTACKS.md](eval/ATTACKS.md) |
 | Unit + integration tests | 116 passing (22 files) | `pnpm test` (PGlite + PostGIS in-process) |
 | End-to-end payout | report → `auto_ok` +100 sats → claim `paid`; live-reporter balance 10,000 → 10,100 sats | `pnpm checkpoint` against Neon with faucet wallets (Nov 19, 2026) |
-| AI photo check accuracy | **not measured yet** (mock only) | `pnpm eval` needs `GEMINI_API_KEY`; mock harness run in [eval/RESULTS.mock.md](eval/RESULTS.mock.md) |
+| AI `water_visible` precision / recall | 100% / 94% (29 stock photos) | `pnpm eval`, `gemini-3.5-flash-lite` → [eval/RESULTS.md](eval/RESULTS.md) |
+| AI depth within one class | 88% (14/16) | same; labels are Claude's visual judgement |
+| AI latency p50 / p95, cost | 3.0 s / 20.2 s, ≈ $0.56 per 1,000 reports | same; measured tokens × list price |
 | `/report` first-load JS | ≈ 166 KB gzip | production build, see [Low-bandwidth UX](#low-bandwidth-ux) |
 | Public location precision | geohash5 (~4.9 km × 4.9 km) | `/api/cells`, Nostr `g` tag; `admin.test.ts` |
 | Photo retention | 7 days | `/api/cron/purge` (daily), `admin.test.ts` |
@@ -162,8 +178,9 @@ Other scripts: `pnpm attack` (→ `eval/ATTACKS.md`), `pnpm eval` (→ `eval/RES
 - **The live demo zone** is a 2 km circle around the presenter (FUTA, Akure) so a live report can work during the
   demo. Real reports there use the phone's real GPS; we never fake GPS in the app. `pnpm checkpoint` is a
   server-side script that submits a report near the zone centre, and it says so.
-- **AI:** the deployed demo runs with `AI_MOCK=1` (fixed "water, knee, 0.9" answer) until a Gemini key is set, so
-  the AI check on the demo is not real. The pipeline, scoring, review and attack handling are.
+- **AI:** real Gemini checks need `GEMINI_API_KEY` and `AI_MOCK=0` on the deployment. With `AI_MOCK=1` (tests, and
+  any deployment without a key) the AI always answers "water, knee, 0.9". The AI eval uses stock photos, not field
+  reports.
 - Rate limits are in memory, per serverless instance.
 
 ## Next steps

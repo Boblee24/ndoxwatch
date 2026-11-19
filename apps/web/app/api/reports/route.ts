@@ -10,6 +10,7 @@ import { submitReport } from "@/lib/reports/pipeline";
 import { MAX_PHOTO_BYTES } from "@/lib/reports/verify";
 
 export const runtime = "nodejs";
+export const maxDuration = 60; // AI photo check can take up to 25 s
 
 // A reporter on a flaky network may retry; a burst of 10 then one every 20 s per client.
 const limiter = createRateLimiter({ capacity: 10, refillPerSec: 1 / 20 });

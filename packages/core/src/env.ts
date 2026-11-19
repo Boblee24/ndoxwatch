@@ -13,7 +13,7 @@ export const serverEnvSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   DEMO_MODE: flag,
   GEMINI_API_KEY: opt(z.string().min(10)),
-  GEMINI_MODEL: z.preprocess(blankToUndef, z.string().min(1).default("gemini-2.5-flash-lite")),
+  GEMINI_MODEL: z.preprocess(blankToUndef, z.string().min(1).default("gemini-3.5-flash-lite")),
   AI_MOCK: flag,
   FALLBACK_BTC_NGN: z.preprocess(blankToUndef, z.coerce.number().positive().default(87_000_000)),
   FALLBACK_BTC_XOF: z.preprocess(blankToUndef, z.coerce.number().positive().default(38_500_000)),

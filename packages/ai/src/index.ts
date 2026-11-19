@@ -57,8 +57,17 @@ const geminiGenerate: GenerateFn = async ({ model, system, parts, jsonSchema, si
       abortSignal: signal,
     },
   });
+  tokens.calls++;
+  tokens.input += res.usageMetadata?.promptTokenCount ?? 0;
+  tokens.output += (res.usageMetadata?.candidatesTokenCount ?? 0) + (res.usageMetadata?.thoughtsTokenCount ?? 0);
   return res.text ?? "";
 };
+
+/** Token usage of real Gemini calls in this process (for cost estimates in eval scripts). Counts only. */
+const tokens = { calls: 0, input: 0, output: 0 };
+export function aiTokenUsage() {
+  return { ...tokens };
+}
 
 let generate: GenerateFn = geminiGenerate;
 /** Tests: swap the generator. Returns a restore function. */
