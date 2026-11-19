@@ -4,6 +4,32 @@ import { get, set, del } from "idb-keyval";
 import { errorCode, isLang, type Lang, type Rates } from "@sats/core";
 import { createWallet, parseNwcUrl, type Wallet, type WalletInfo } from "@sats/lightning";
 
+/**
+ * First contact with an NWC relay is often slow (cold websocket + TLS on a phone, the wallet service waking up),
+ * so the very first info() can time out and a second click then works. Retry once, with a fresh client and a longer
+ * timeout, unless the wallet itself answered with an error (wrong secret, restricted…), which a retry won't fix.
+ */
+export const CONNECT_TIMEOUTS_MS = [12_000, 25_000] as const;
+
+export async function connectWithRetry(
+  nwcUrl: string,
+  make: (url: string) => Wallet = createWallet,
+  timeouts: readonly number[] = CONNECT_TIMEOUTS_MS,
+): Promise<{ wallet: Wallet; info: WalletInfo }> {
+  let last: unknown;
+  for (const ms of timeouts) {
+    const w = make(nwcUrl);
+    try {
+      return { wallet: w, info: await withTimeout(w.info(), ms) };
+    } catch (err) {
+      w.close();
+      last = err;
+      if (err && typeof err === "object" && (err as { walletResponse?: unknown }).walletResponse === true) break;
+    }
+  }
+  throw last;
+}
+
 export type ConnStatus = "loading" | "disconnected" | "connecting" | "connected" | "error";
 
 function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
@@ -32,16 +58,14 @@ export function useWalletConnection(slot = "wallet") {
         return false;
       }
       setStatus("connecting");
-      const w = createWallet(nwcUrl);
       try {
-        const i = await withTimeout(w.info(), 15_000);
+        const { wallet: w, info: i } = await connectWithRetry(nwcUrl);
         if (persist) await set(key, nwcUrl.trim());
         setWallet(w);
         setInfo(i);
         setStatus("connected");
         return true;
       } catch (err) {
-        w.close();
         setError(errorCode(err));
         setStatus("error");
         return false;
