@@ -23,7 +23,8 @@
     "seed:geo": "tsx scripts/seed.ts",
     "attack": "tsx scripts/attack.ts",
     "personas": "tsx scripts/personas.ts",
-    "eval": "tsx scripts/eval.ts"
+    "eval": "tsx scripts/eval.ts",
+    "checkpoint": "tsx scripts/checkpoint.ts"
   },
   "devDependencies": {
     "@types/node": "^24.19.2",
