@@ -277,7 +277,7 @@ function ReportDetail({
         </button>
       </div>
       {src ? <img src={src} alt="Reported flood photo" className="max-h-80 w-full rounded-lg object-contain" /> : <p className="text-sm text-[var(--muted)]">{r.has_photo ? "Loading photo…" : "No photo (rejected or older than 7 days)"}</p>}
-      <dl className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
+      <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-1 text-sm">
         <dt>Location</dt>
         <dd>
           {r.lat.toFixed(5)}, {r.lon.toFixed(5)} (± {Math.round(r.accuracy_m)} m)
@@ -287,9 +287,9 @@ function ReportDetail({
         <dt>Reporter key</dt>
         <dd className="font-mono">{r.reporter}…</dd>
         <dt>Checks</dt>
-        <dd className="font-mono text-xs">{JSON.stringify(r.checks)}</dd>
+        <dd className="min-w-0 font-mono text-xs [overflow-wrap:anywhere]">{JSON.stringify(r.checks)}</dd>
         <dt>AI output</dt>
-        <dd className="font-mono text-xs">{r.ai ? JSON.stringify(r.ai) : "none (AI unavailable)"}</dd>
+        <dd className="min-w-0 font-mono text-xs [overflow-wrap:anywhere]">{r.ai ? JSON.stringify(r.ai) : "none (AI unavailable)"}</dd>
       </dl>
       {r.status === "review" && (
         <div className="flex gap-2">
