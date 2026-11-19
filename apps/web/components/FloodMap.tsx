@@ -5,17 +5,16 @@
  */
 import { useEffect, useRef } from "react";
 import ngeohash from "ngeohash";
+import { DEPTH_COLORS, type MapCell, type MapPoint } from "./mapTypes";
 import { Map as MlMapCtor, NavigationControl, setWorkerUrl, type GeoJSONSource, type LngLatBoundsLike, type Map as MlMap } from "maplibre-gl";
 
 // Served from public/ (copied on predev/prebuild); bundling breaks MapLibre's own worker lookup.
 setWorkerUrl("/vendor/maplibre-gl-worker.mjs");
 
 export const STYLE_URL = "https://tiles.openfreemap.org/styles/liberty";
-export const DEPTH_COLORS = { ankle: "#7dd3fc", knee: "#38bdf8", waist: "#0369a1", impassable: "#1e1b4b" } as const;
 
 type FC = { type: "FeatureCollection"; features: Array<{ type: "Feature"; properties: Record<string, unknown>; geometry: unknown }> };
-export type MapCell = { geohash5: string; count: number; max_depth: keyof typeof DEPTH_COLORS };
-export type MapPoint = { id: string; lat: number; lon: number; depth: string; status: string; satellite_missed: boolean };
+export type { MapCell, MapPoint };
 
 const EMPTY: FC = { type: "FeatureCollection", features: [] };
 
@@ -91,7 +90,7 @@ export default function FloodMap({
       m.addSource("mask", { type: "geojson", data: EMPTY as never });
       m.addLayer({ id: "mask-fill", type: "fill", source: "mask", paint: { "fill-color": "#ef4444", "fill-opacity": 0.25 } });
       m.addSource("zones", { type: "geojson", data: EMPTY as never });
-      m.addLayer({ id: "zones-line", type: "line", source: "zones", paint: { "line-color": "#f59e0b", "line-width": 2, "line-dasharray": [2, 1] } });
+      m.addLayer({ id: "zones-line", type: "line", source: "zones", paint: { "line-color": "#0c1a24", "line-width": 2.5, "line-dasharray": [3, 2] } });
       m.addSource("cells", { type: "geojson", data: EMPTY as never });
       m.addLayer({
         id: "cells-fill",
@@ -99,7 +98,7 @@ export default function FloodMap({
         source: "cells",
         paint: {
           "fill-color": ["match", ["get", "depth"], "ankle", DEPTH_COLORS.ankle, "knee", DEPTH_COLORS.knee, "waist", DEPTH_COLORS.waist, DEPTH_COLORS.impassable],
-          "fill-opacity": 0.55,
+          "fill-opacity": 0.6,
           "fill-outline-color": "#0f172a",
         },
       });

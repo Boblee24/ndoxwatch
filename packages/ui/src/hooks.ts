@@ -1,7 +1,7 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import { get, set, del } from "idb-keyval";
-import { errorCode, isLang, type Lang, type Rates } from "@sats/core";
+import { errorCode, type Rates } from "@sats/core";
 import { createWallet, parseNwcUrl, type Wallet, type WalletInfo } from "@sats/lightning";
 
 /**
@@ -124,42 +124,4 @@ export function useRates(path = "/api/rates"): Rates | null {
   return rates;
 }
 
-export function useOnline(): boolean {
-  const [online, setOnline] = useState(true);
-  useEffect(() => {
-    setOnline(navigator.onLine);
-    const on = () => setOnline(true);
-    const off = () => setOnline(false);
-    window.addEventListener("online", on);
-    window.addEventListener("offline", off);
-    return () => {
-      window.removeEventListener("online", on);
-      window.removeEventListener("offline", off);
-    };
-  }, []);
-  return online;
-}
-
-/** UI language remembered per device (a convenience; falls back silently if storage is blocked). */
-export function useLang(fallback: string = "en"): [string, (l: string) => void] {
-  const [lang, setLangState] = useState(fallback);
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("sats:lang");
-      if (saved) setLangState(saved);
-      else if (isLang(navigator.language.slice(0, 2))) setLangState(navigator.language.slice(0, 2) as Lang);
-    } catch {
-      /* storage blocked */
-    }
-  }, []);
-  const setLang = useCallback((l: string) => {
-    setLangState(l);
-    try {
-      localStorage.setItem("sats:lang", l);
-    } catch {
-      /* ignore */
-    }
-    if (typeof document !== "undefined") document.documentElement.lang = l === "pcm" ? "en" : l;
-  }, []);
-  return [lang, setLang];
-}
+export { useOnline, useLang } from "./light";

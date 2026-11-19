@@ -1,54 +1,80 @@
 @import "tailwindcss";
 @source "../../../packages/ui/src";
 
+/*
+ * NdoxWatch: "flood gauge" field instrument.
+ * A river staff gauge (ticks, depth bands, waterline) is the motif. High-vis safety yellow for the ONE action on
+ * each screen, deep river ink for text, water cyan for data. Built to be read in the rain, in sunlight, on a cheap
+ * phone: big type, ≥ 56px targets, no decorative images (CSS only), two self-hosted fonts.
+ */
 :root {
-  --bg: #f7f5f0;
-  --surface: #ffffff;
-  --surface-2: #efece4;
-  --fg: #16140f;
-  --muted: #5c574c;
-  --border: #d9d4c7;
-  --accent: #f7931a; /* bitcoin orange */
-  --accent-fg: #16140f;
-  --ok: #138a36;
-  --danger: #c0262d;
-  --warn: #ffcf33;
-  --focus: #1d4ed8;
+  --bg: #efeadf; /* survey paper */
+  --surface: #fbf8f1;
+  --surface-2: #e3dccd;
+  --fg: #0c1a24; /* river ink */
+  --muted: #4a5a63;
+  --border: #0c1a24;
+  --hair: #c6bda9;
+  --accent: #ffd60a; /* hi-vis */
+  --accent-fg: #0c1a24;
+  --water: #0f8bd1;
+  --water-deep: #0a4f7a;
+  --water-soft: #bfe3f5;
+  --ok: #0d7a3a;
+  --danger: #c4161c;
+  --warn: #ffd60a;
+  --focus: #0f8bd1;
+  --tick: rgb(12 26 36 / 0.07);
   color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #12110e;
-    --surface: #1c1a16;
-    --surface-2: #29261f;
-    --fg: #f4f1ea;
-    --muted: #b3ac9c;
-    --border: #3a362d;
-    --accent: #f7931a;
-    --accent-fg: #12110e;
-    --ok: #3ccf6a;
-    --danger: #ef4c53;
-    --warn: #ffcf33;
-    --focus: #8fb3ff;
+    --bg: #07131b;
+    --surface: #0d1f2b;
+    --surface-2: #142b3a;
+    --fg: #eef3f5;
+    --muted: #9db0bb;
+    --border: #eef3f5;
+    --hair: #24404f;
+    --accent: #ffd60a;
+    --accent-fg: #07131b;
+    --water: #38b6f0;
+    --water-deep: #1b77ad;
+    --water-soft: #12405a;
+    --ok: #39d17a;
+    --danger: #ff5a5f;
+    --warn: #ffd60a;
+    --focus: #ffd60a;
+    --tick: rgb(238 243 245 / 0.06);
     color-scheme: dark;
   }
 }
 
 :root[data-theme="dark"] {
-  --bg: #12110e;
-  --surface: #1c1a16;
-  --surface-2: #29261f;
-  --fg: #f4f1ea;
-  --muted: #b3ac9c;
-  --border: #3a362d;
-  --accent: #f7931a;
-  --accent-fg: #12110e;
-  --ok: #3ccf6a;
-  --danger: #ef4c53;
-  --warn: #ffcf33;
-  --focus: #8fb3ff;
+  --bg: #07131b;
+  --surface: #0d1f2b;
+  --surface-2: #142b3a;
+  --fg: #eef3f5;
+  --muted: #9db0bb;
+  --border: #eef3f5;
+  --hair: #24404f;
+  --accent: #ffd60a;
+  --accent-fg: #07131b;
+  --water: #38b6f0;
+  --water-deep: #1b77ad;
+  --water-soft: #12405a;
+  --ok: #39d17a;
+  --danger: #ff5a5f;
+  --warn: #ffd60a;
+  --focus: #ffd60a;
+  --tick: rgb(238 243 245 / 0.06);
   color-scheme: dark;
+}
+
+@theme inline {
+  --font-display: var(--font-gauge), "Arial Narrow", sans-serif;
+  --font-sans: var(--font-body), system-ui, sans-serif;
 }
 
 html {
@@ -56,9 +82,120 @@ html {
 }
 
 body {
-  background: var(--bg);
+  background-color: var(--bg);
+  /* Gauge ticks: a faint 8px/40px ruling, like survey paper. Pure CSS, zero bytes over the network. */
+  background-image:
+    repeating-linear-gradient(0deg, var(--tick) 0 1px, transparent 1px 40px),
+    repeating-linear-gradient(0deg, var(--tick) 0 1px, transparent 1px 8px);
+  background-size: 100% 40px, 22px 8px;
+  background-repeat: repeat, repeat-y;
   color: var(--fg);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font-body), system-ui, sans-serif;
   font-size: 18px;
   line-height: 1.5;
+}
+
+.font-display {
+  font-family: var(--font-gauge), "Arial Narrow", sans-serif;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+/* Hard, printed-looking edges: field equipment, not a SaaS card. */
+.slab {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 4px 4px 0 var(--border);
+}
+
+.hivis {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border: 2px solid var(--fg);
+  box-shadow: 4px 4px 0 var(--fg);
+  transition: transform 80ms ease, box-shadow 80ms ease;
+}
+.hivis:active:not(:disabled) {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0 var(--fg);
+}
+.hivis:disabled {
+  background: var(--surface-2);
+  color: var(--muted);
+  border-color: var(--hair);
+  box-shadow: none;
+}
+
+/* Diagonal hazard stripe, used sparingly (offline strip, "impassable"). */
+.hazard {
+  background: repeating-linear-gradient(-45deg, var(--accent) 0 12px, var(--fg) 12px 24px);
+}
+
+/* Water fill with a slow wave on its surface. */
+.water {
+  background: linear-gradient(180deg, var(--water) 0%, var(--water-deep) 100%);
+}
+.wave {
+  position: absolute;
+  inset: -6px 0 auto 0;
+  height: 12px;
+  background: radial-gradient(12px 6px at 12px 6px, var(--water) 98%, transparent 100%) 0 0 / 24px 12px repeat-x;
+  animation: wave 2.4s linear infinite;
+}
+@keyframes wave {
+  to {
+    background-position: 24px 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.rise {
+  animation: rise 360ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes stamp {
+  0% {
+    opacity: 0;
+    transform: scale(1.6) rotate(-8deg);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(0.94) rotate(-3deg);
+  }
+  100% {
+    transform: scale(1) rotate(-3deg);
+  }
+}
+.stamp {
+  animation: stamp 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wave,
+  .rise,
+  .stamp {
+    animation: none;
+  }
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* MapLibre controls in the same visual language. */
+.maplibregl-ctrl-group {
+  border: 2px solid #0c1a24 !important;
+  border-radius: 4px !important;
+  box-shadow: 2px 2px 0 #0c1a24 !important;
 }

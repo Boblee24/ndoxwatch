@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState, type ButtonHTMLAttributes, type ReactNode } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { formatFiat, formatSats, priceFor, satsToFiat, t, type Fiat, type Rates } from "@sats/core";
-import { useOnline } from "./hooks";
+import { useOnline } from "./light";
 
 /** "2,500 sats ≈ ₦3,750". Fiat is omitted until rates load. */
 export function SatsAmount({
@@ -34,15 +34,16 @@ type BigButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 /** 48px+ tap target, high contrast. */
 export function BigButton({ variant = "primary", icon, className = "", children, ...rest }: BigButtonProps) {
   const styles = {
-    primary: "bg-[var(--accent)] text-[var(--accent-fg)] hover:brightness-110",
-    secondary: "bg-[var(--surface-2)] text-[var(--fg)] border border-[var(--border)] hover:brightness-95",
+    // `hivis` (hard border + offset shadow) is defined in the app's globals.css; falls back to the accent fill.
+    primary: "hivis bg-[var(--accent)] text-[var(--accent-fg)]",
+    secondary: "bg-[var(--surface)] text-[var(--fg)] border-2 border-[var(--border)] hover:brightness-95",
     danger: "bg-[var(--danger)] text-white hover:brightness-110",
     ghost: "bg-transparent text-[var(--fg)] underline-offset-4 hover:underline",
   }[variant];
   return (
     <button
       type="button"
-      className={`min-h-12 rounded-xl px-5 py-3 text-lg font-semibold inline-flex items-center justify-center gap-2 transition disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus)] ${styles} ${className}`}
+      className={`min-h-12 rounded-md px-5 py-3 text-lg font-semibold inline-flex items-center justify-center gap-2 transition disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus)] ${styles} ${className}`}
       {...rest}
     >
       {icon}
@@ -100,42 +101,7 @@ export function DemoBanner({ lang = "en", show }: { lang?: string; show: boolean
   );
 }
 
-const LANG_NAMES: Record<string, string> = {
-  en: "English",
-  pcm: "Pidgin",
-  fr: "Français",
-  yo: "Yorùbá",
-  ha: "Hausa",
-  wo: "Wolof",
-};
-
-export function LanguageSwitch({
-  value,
-  onChange,
-  langs = ["en", "pcm", "fr"],
-}: {
-  value: string;
-  onChange: (l: string) => void;
-  langs?: string[];
-}) {
-  return (
-    <label className="inline-flex items-center gap-2 text-sm">
-      <span className="sr-only">{t("lang.label", value)}</span>
-      <span aria-hidden>🌐</span>
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="min-h-12 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-2 text-base"
-      >
-        {langs.map((l) => (
-          <option key={l} value={l}>
-            {LANG_NAMES[l] ?? l}
-          </option>
-        ))}
-      </select>
-    </label>
-  );
-}
+export { LanguageSwitch } from "./light";
 
 type BarcodeDetectorLike = { detect(src: CanvasImageSource): Promise<Array<{ rawValue: string }>> };
 

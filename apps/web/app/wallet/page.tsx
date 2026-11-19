@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { t } from "@sats/core/i18n";
 import type { Wallet } from "@sats/lightning";
 import { getOrCreateKey, signEvent } from "@sats/nostr/browser";
-import { BigButton, SatsAmount, WalletPanel, useRates } from "@sats/ui";
+import { BigButton, WalletPanel, useRates } from "@sats/ui";
 import { useAppLang } from "../shell";
 import "@/lib/i18n";
 import { claimEventInput } from "@/lib/claims";
@@ -12,12 +12,15 @@ export default function WalletPage() {
   const lang = useAppLang();
   const rates = useRates();
   return (
-    <>
-      <h1 className="sr-only">Wallet</h1>
+    <section className="flex w-full max-w-md flex-col gap-4 pt-1">
+      <div className="flex flex-col gap-1">
+        <h1 className="font-display text-4xl leading-none">{t("nav.wallet", lang)}</h1>
+        <p className="text-[var(--muted)]">{t("w.lead", lang)}</p>
+      </div>
       <WalletPanel slot="wallet" lang={lang} rates={rates} currency={lang === "fr" ? "XOF" : "NGN"} warnIfCanSpend={false}>
         {({ wallet, refresh }) => <Rewards wallet={wallet} refresh={refresh} lang={lang} />}
       </WalletPanel>
-    </>
+    </section>
   );
 }
 
@@ -82,16 +85,19 @@ function Rewards({ wallet, refresh, lang }: { wallet: Wallet; refresh: () => voi
   }, [load, doClaim]);
 
   return (
-    <section className="flex flex-col gap-3 rounded-xl border border-[var(--border)] p-4">
-      <h2 className="text-lg font-bold">{t("w.rewards", lang)}</h2>
-      <p className="text-2xl font-bold">{claimable === null ? "…" : <SatsAmount sats={claimable} />}</p>
-      <BigButton disabled={busy || !claimable} onClick={() => claimable && void doClaim(claimable)}>
+    <section className="relative flex flex-col gap-3 overflow-hidden rounded-md border-2 border-[var(--fg)] bg-[var(--fg)] p-4 text-[var(--bg)]">
+      <span aria-hidden className="hazard absolute inset-x-0 top-0 h-1.5" />
+      <h2 className="pt-1 text-sm font-bold uppercase tracking-wide">{t("w.rewards", lang)}</h2>
+      <p className="font-display text-6xl leading-none tabular-nums">
+        {claimable === null ? "…" : claimable.toLocaleString()} <span className="text-2xl text-[var(--accent)]">sats</span>
+      </p>
+      <BigButton disabled={busy || !claimable} onClick={() => claimable && void doClaim(claimable)} className="font-display text-2xl">
         {busy ? t("w.claiming", lang) : t("w.claim", lang)}
       </BigButton>
       <label className="flex min-h-12 items-center gap-3">
         <input
           type="checkbox"
-          className="h-6 w-6"
+          className="h-6 w-6 accent-[var(--accent)]"
           checked={auto}
           onChange={(e) => {
             setAuto(e.target.checked);
@@ -104,7 +110,11 @@ function Rewards({ wallet, refresh, lang }: { wallet: Wallet; refresh: () => voi
         />
         {t("w.auto", lang)}
       </label>
-      {msg && <p role="status" className="font-medium">{msg}</p>}
+      {msg && (
+        <p role="status" className="rounded-sm bg-[var(--bg)] p-2 font-bold text-[var(--fg)]">
+          {msg}
+        </p>
+      )}
     </section>
   );
 }

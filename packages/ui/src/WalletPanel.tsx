@@ -113,7 +113,7 @@ export function WalletPanel({
 
       {children?.({ wallet, info, refresh })}
 
-      <div role="tablist" className="grid grid-cols-3 gap-1 rounded-xl bg-[var(--surface-2)] p-1">
+      <div role="tablist" className="grid grid-cols-3 gap-1 rounded-md border-2 border-[var(--border)] bg-[var(--surface-2)] p-1">
         {(["receive", ...(allowSend ? (["send"] as const) : []), "history"] as const).map((k) => (
           <button
             key={k}
@@ -135,7 +135,7 @@ export function WalletPanel({
 }
 
 function Card({ children }: { children: ReactNode }) {
-  return <section className="flex w-full max-w-md flex-col gap-4 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 shadow-sm">{children}</section>;
+  return <section className="flex w-full max-w-md flex-col gap-4 slab p-4">{children}</section>;
 }
 
 function ConnectForm({ lang, busy, error, onConnect }: { lang: string; busy: boolean; error: string; onConnect: (u: string) => Promise<boolean> }) {
@@ -151,7 +151,7 @@ function ConnectForm({ lang, busy, error, onConnect }: { lang: string; busy: boo
           rows={3}
           autoComplete="off"
           spellCheck={false}
-          className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-3 font-mono text-sm"
+          className="rounded-md border-2 border-[var(--border)] bg-[var(--surface)] p-3 font-mono text-sm"
         />
       </label>
       {error && <p role="alert" className="text-[var(--danger)]">{error}</p>}
@@ -221,7 +221,7 @@ function ReceiveTab({ wallet, lang, rates, currency, onPaid }: { wallet: Wallet;
           pattern="[0-9]*"
           value={amount}
           onChange={(e) => setAmount(e.target.value.replace(/\D/g, "").slice(0, 7))}
-          className="min-h-12 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 text-2xl tabular-nums"
+          className="min-h-12 rounded-md border-2 border-[var(--border)] bg-[var(--surface)] px-3 text-2xl tabular-nums"
         />
       </label>
       {valid && <SatsAmount sats={sats} rates={rates} currency={currency} size="sm" />}
@@ -292,7 +292,7 @@ function SendTab({ wallet, lang, rates, currency, onPaid }: { wallet: Wallet; la
           onChange={(e) => check(e.target.value)}
           rows={3}
           spellCheck={false}
-          className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-3 font-mono text-sm"
+          className="rounded-md border-2 border-[var(--border)] bg-[var(--surface)] p-3 font-mono text-sm"
         />
       </label>
       <ScanButton onResult={check} />

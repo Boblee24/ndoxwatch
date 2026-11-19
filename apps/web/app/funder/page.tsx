@@ -116,7 +116,7 @@ export default function FunderPage() {
   if (!token) {
     return (
       <section className="flex w-full max-w-md flex-col gap-3 pt-4">
-        <h1 className="text-2xl font-bold">Funder console</h1>
+        <h1 className="font-display text-4xl leading-none">Funder console</h1>
         <p className="text-sm text-[var(--muted)]">Emergency desk access. The token stays in this browser tab only.</p>
         {err && <p className="font-medium text-[var(--danger)]">{err}</p>}
         <form
@@ -138,7 +138,7 @@ export default function FunderPage() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="ADMIN_TOKEN"
-            className="min-h-12 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3"
+            className="min-h-12 rounded-md border-2 border-[var(--fg)] bg-[var(--surface)] px-3"
           />
           <BigButton type="submit">Open console</BigButton>
         </form>
@@ -154,7 +154,7 @@ export default function FunderPage() {
   return (
     <section className="flex w-full flex-col gap-4 pt-2">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h1 className="text-2xl font-bold">Funder console</h1>
+        <h1 className="font-display text-4xl leading-none">Funder console</h1>
         <div className="flex gap-2">
           <BigButton variant="secondary" onClick={() => download("geojson")}>
             GeoJSON
@@ -168,26 +168,26 @@ export default function FunderPage() {
 
       {ov && (
         <div className="grid gap-3 sm:grid-cols-3">
-          <div className="rounded-xl border border-[var(--border)] p-3">
+          <div className="slab p-3">
             <p className="text-sm text-[var(--muted)]">{ov.budget ? "NWC budget used" : "Paid today / daily cap"}</p>
-            <p className="text-xl font-bold">
+            <p className="font-display text-3xl leading-none">
               {budgetUsed.toLocaleString()} / {budgetTotal.toLocaleString()} sats
             </p>
-            <div className="mt-2 h-3 w-full rounded bg-[var(--surface-2)]" role="meter" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100}>
-              <div className={`h-3 rounded ${pct >= 90 ? "bg-[var(--danger)]" : "bg-[var(--accent)]"}`} style={{ width: `${pct}%` }} />
+            <div className="mt-2 h-4 w-full rounded-sm border-2 border-[var(--fg)] bg-[var(--surface-2)]" role="meter" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100}>
+              <div className={`h-full ${pct >= 90 ? "bg-[var(--danger)]" : "bg-[var(--accent)]"}`} style={{ width: `${pct}%` }} />
             </div>
             {!ov.sponsorConfigured && <p className="mt-1 text-xs text-[var(--danger)]">SPONSOR_NWC_URL not set: claims will fail.</p>}
           </div>
-          <div className="rounded-xl border border-[var(--border)] p-3">
+          <div className="slab p-3">
             <p className="text-sm text-[var(--muted)]">Reports</p>
-            <p className="text-xl font-bold">{ov.counts.total}</p>
+            <p className="font-display text-3xl leading-none">{ov.counts.total}</p>
             <p className="text-sm">
               ✓ {ov.counts.auto_ok} · review {ov.counts.review} · ✗ {ov.counts.rejected} · 🛰️ missed {ov.counts.sat_missed}
             </p>
           </div>
-          <div className="rounded-xl border border-[var(--border)] p-3">
+          <div className="slab p-3">
             <p className="text-sm text-[var(--muted)]">Payouts</p>
-            <p className="text-xl font-bold">{ov.paused ? "Paused" : "Running"}</p>
+            <p className="font-display text-3xl leading-none">{ov.paused ? "Paused" : "Running"}</p>
             <BigButton variant={ov.paused ? "primary" : "danger"} onClick={togglePause} className="mt-1 w-full">
               {ov.paused ? "Resume payouts" : "Pause payouts"}
             </BigButton>
@@ -195,7 +195,7 @@ export default function FunderPage() {
         </div>
       )}
 
-      <FloodMap className="h-[50vh] w-full" mask={ov?.mask} zones={ov?.zones} points={reports} onPointClick={setSelected} />
+      <FloodMap className="h-[50vh] w-full !rounded-md !border-2 !border-[var(--fg)]" mask={ov?.mask} zones={ov?.zones} points={reports} onPointClick={setSelected} />
       <p className="text-xs text-[var(--muted)]">
         Red area: satellite mask ({ov?.mask.features.map((f) => `${f.properties.source}${f.properties.source === "placeholder" ? "" : `, ${f.properties.pre_window} → ${f.properties.post_window}`}`).join("; ") || "none"}).
         Dots: green paid, amber review, red rejected; purple ring = &quot;Satellite missed?&quot;. Precise locations: admin only.
@@ -214,7 +214,7 @@ export default function FunderPage() {
             role="tab"
             aria-selected={filter === f}
             onClick={() => setFilter(f)}
-            className={`min-h-12 rounded-lg px-4 font-semibold ${filter === f ? "bg-[var(--accent)] text-[var(--accent-fg)]" : "bg-[var(--surface-2)]"}`}
+            className={`min-h-12 rounded-md border-2 border-[var(--fg)] px-4 font-bold ${filter === f ? "bg-[var(--fg)] text-[var(--bg)]" : "bg-[var(--surface)]"}`}
           >
             {label}
           </button>
@@ -227,7 +227,7 @@ export default function FunderPage() {
         {reports.length === 0 && <li className="text-[var(--muted)]">Nothing here.</li>}
         {reports.map((r) => (
           <li key={r.id}>
-            <button onClick={() => setSelected(r.id)} className="flex min-h-12 w-full flex-wrap items-center gap-3 rounded-lg border border-[var(--border)] p-3 text-left">
+            <button onClick={() => setSelected(r.id)} className="flex min-h-12 w-full flex-wrap items-center gap-3 rounded-md border-2 border-[var(--fg)] bg-[var(--surface)] p-3 text-left">
               <span className="font-semibold">{r.status}</span>
               {r.satellite_missed && <span className="rounded bg-violet-700 px-2 text-sm text-white">Satellite missed?</span>}
               <span>{r.depth}</span>
@@ -267,7 +267,7 @@ function ReportDetail({
   }, [r.id, r.has_photo, api]);
 
   return (
-    <div className="flex flex-col gap-3 rounded-xl border-2 border-[var(--accent)] p-4">
+    <div className="flex flex-col gap-3 slab p-4">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold">
           Report {r.id.slice(0, 8)} {r.satellite_missed && <span className="rounded bg-violet-700 px-2 text-sm text-white">Satellite missed?</span>}
